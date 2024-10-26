@@ -7,5 +7,10 @@ edition = "2021"
 name = "core"
 crate-type = ["cdylib"]
 
+[features]
+python = ["pyo3"]
+wasm = ["wasm-bindgen"]
+
 [dependencies]
-pyo3 = { version = "0.22.5", features = ["extension-module"] }
+pyo3 = { version = "0.22.5", features = ["extension-module"], optional = true }
+wasm-bindgen = { version = "0.2.95", optional = true }

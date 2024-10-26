@@ -15,7 +15,6 @@
         packages.default = pkgs.mkShell {
           packages = with pkgs; [
             gnumake
-            rustup
             nodejs_22
             # c++
             gcc
@@ -24,6 +23,12 @@
             python3Packages.pip
             maturin
             virtualenv
+            libiconv
+            # wasm
+            wasm-pack
+            wasm-bindgen-cli
+            # rust
+            rustup
           ];
         };
 
