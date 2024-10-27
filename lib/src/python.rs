@@ -61,8 +61,8 @@ impl TodosClass {
         self.0.list().iter().map(Into::into).collect()
     }
 
-    fn get(&self, id: i32) -> PyResult<Option<TodoClass>> {
-        Ok(self.0.get(id).map(Into::into))
+    fn get(&self, id: i32) -> Option<TodoClass> {
+        self.0.get(id).map(Into::into)
     }
 }
 

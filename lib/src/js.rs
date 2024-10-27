@@ -50,7 +50,7 @@ impl TodosClass {
     }
 
     pub fn get(&self, id: i32) -> Option<TodoClass> {
-        self.0.get(id).map(|todo| TodoClass(todo.clone()))
+        self.0.get(id).map(Into::into)
     }
 
     pub fn add(&mut self, id: i32, title: String) {

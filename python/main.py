@@ -10,3 +10,8 @@ todos.remove(2)
 
 for todo in todos.list():
     print(todo)
+
+try:
+    todos.complete(10)
+except ValueError as err:
+    print(err)
