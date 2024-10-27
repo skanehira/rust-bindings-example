@@ -1,0 +1,41 @@
+[tasks.fmt]
+command = "nix"	
+args = ["fmt"]
+
+[tasks.setup-py]
+condition_script = ["! [ -d \"python/venv\" ]"]
+command = "virtualenv"
+args = ["python/venv"]
+description = "Set up Python virtual environment if it doesn't exist."
+
+[tasks.build-py]
+dependencies = ["setup-py"]
+command = "sh"
+args = [
+	"-c",
+	"cd python && source ./venv/bin/activate && cd ../lib && maturin develop --features python",
+]
+description = "Build Python package using maturin."
+
+[tasks.run-py]
+cwd = "./python"
+dependencies = ["build-py"]
+command = "sh"
+args = ["-c", "source ./venv/bin/activate && python main.py"]
+description = "Run the Python script after building."
+
+[tasks.build-wasm]
+cwd = "./lib"
+command = "sh"
+args = [
+	"-c",
+	"wasm-pack build --target nodejs --out-dir ../node/lib/core --out-name index -- --features wasm",
+]
+description = "Build WebAssembly with wasm-pack."
+
+[tasks.run-wasm]
+cwd = "./node"
+dependencies = ["build-wasm"]
+command = "node"
+args = ["main.mjs"]
+description = "Run the Node.js script after building WebAssembly."

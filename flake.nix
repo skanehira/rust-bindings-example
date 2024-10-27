@@ -14,7 +14,7 @@
       {
         packages.default = pkgs.mkShell {
           packages = with pkgs; [
-            gnumake
+            cargo-make
             nodejs_22
             # c++
             gcc
@@ -26,7 +26,6 @@
             libiconv
             # wasm
             wasm-pack
-            wasm-bindgen-cli
             # rust
             rustup
           ];

@@ -1,13 +1,13 @@
-# rust-ffi-example
+# rust-bindings-example
 
 ## Python
 
 ```sh
-$ make run-py
+$ cargo make run-py
 ```
 
 ## node
 
 ```sh
-$ make run-wasm
+$ cargo make run-wasm
 ```
