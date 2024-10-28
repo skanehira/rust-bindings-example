@@ -33,7 +33,7 @@ args = [
 ]
 description = "Build WebAssembly with wasm-pack."
 
-[tasks.run-wasm]
+[tasks.run-node]
 cwd = "./node"
 dependencies = ["build-wasm"]
 command = "node"
