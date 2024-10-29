@@ -1,8 +1,12 @@
-#[derive(Clone)]
+#![allow(dead_code)]
+
+use crate::enumurate::TodoStatus;
+
+#[derive(Clone, Debug)]
 pub(crate) struct Todo {
     pub id: i32,
     pub title: String,
-    pub completed: bool,
+    pub status: TodoStatus,
 }
 
 impl Todo {
@@ -10,12 +14,12 @@ impl Todo {
         Todo {
             id,
             title,
-            completed: false,
+            status: TodoStatus::NotStarted,
         }
     }
 
-    pub fn complete(&mut self) {
-        self.completed = true;
+    pub fn change_status(&mut self, status: TodoStatus) {
+        self.status = status;
     }
 }
 
@@ -36,7 +40,7 @@ impl Todos {
             .iter_mut()
             .find(|todo| todo.id == id)
             .ok_or("todo not found")?
-            .complete();
+            .change_status(TodoStatus::Completed);
         Ok(())
     }
 

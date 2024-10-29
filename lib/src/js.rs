@@ -1,6 +1,9 @@
 #![allow(unused)]
 
-use crate::core::{Todo, Todos};
+use crate::{
+    core::{Todo, Todos},
+    enumurate::TodoStatus,
+};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(js_name = Todo, inspectable)]
@@ -30,12 +33,17 @@ impl TodoClass {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn completed(&self) -> bool {
-        self.0.completed
+    pub fn status(&self) -> TodoStatus {
+        self.0.status.clone()
     }
 
-    pub fn complete(&mut self) {
-        self.0.complete();
+    #[wasm_bindgen(getter)]
+    pub fn completed(&self) -> bool {
+        self.0.status == TodoStatus::Completed
+    }
+
+    pub fn change_status(&mut self, status: TodoStatus) {
+        self.0.change_status(status);
     }
 }
 

@@ -1,4 +1,7 @@
-use crate::core::{Todo, Todos};
+use crate::{
+    core::{Todo, Todos},
+    enumurate::TodoStatus,
+};
 use pyo3::{exceptions::PyValueError, prelude::*};
 
 #[derive(Clone)]
@@ -19,13 +22,13 @@ impl TodoClass {
     }
 
     fn complete(&mut self) {
-        self.0.complete();
+        self.0.change_status(TodoStatus::Completed);
     }
 
     fn __repr__(&self) -> String {
         format!(
-            "Todo {{ id: {}, title: \"{}\", completed: {} }}",
-            self.0.id, self.0.title, self.0.completed
+            "Todo {{ id: {}, title: \"{}\", status: {:?} }}",
+            self.0.id, self.0.title, self.0.status
         )
     }
 }
