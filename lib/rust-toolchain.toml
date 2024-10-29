@@ -1,5 +1,5 @@
 [toolchain]
-channel = "stable-2024-10-17"
+channel = "stable"
 profile = "minimal"
 targets = [
 	"wasm32-unknown-unknown",

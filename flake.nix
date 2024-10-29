@@ -28,6 +28,7 @@
             wasm-pack
             # rust
             rustup
+            gcc
           ];
         };
 
