@@ -13,9 +13,33 @@ type MyResult<T> = PyResult<T>;
 #[cfg(feature = "cpp")]
 type MyResult<T> = Result<T, String>;
 
+#[cfg(feature = "cpp")]
+#[cxx::bridge]
+mod ffi {
+    extern "Rust" {
+        type Todo;
+
+        fn new_todo(id: i32, title: String) -> Box<Todo>;
+        fn status(todo: &Todo) -> TodoStatus;
+    }
+
+    #[derive(Debug)]
+    enum TodoStatus {
+        NotStarted = 0,
+        InProgress = 1,
+        Completed = 2,
+    }
+}
+
+#[cfg(feature = "cpp")]
+pub fn new_todo(id: i32, title: String) -> Box<Todo> {
+    Box::new(Todo::new(id, title))
+}
+
 #[cfg_attr(feature = "python", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Debug, PartialEq, Clone, Copy, Default)]
+#[repr(i32)]
 pub enum TodoStatus {
     #[default]
     NotStarted,
@@ -35,6 +59,15 @@ pub struct Todo {
 #[cfg_attr(feature = "wasm", wasm_bindgen(js_class = Todo))]
 #[cfg_attr(feature = "python", pymethods)]
 impl Todo {
+    #[cfg(feature = "cpp")]
+    pub fn new(id: i32, title: String) -> Self {
+        Todo {
+            id,
+            title,
+            status: TodoStatus::default(),
+        }
+    }
+
     #[cfg(feature = "wasm")]
     #[wasm_bindgen(constructor)]
     pub fn new(id: i32, title: String) -> Self {
@@ -86,6 +119,7 @@ impl Todo {
 
 #[cfg_attr(feature = "wasm", wasm_bindgen(js_name = Todos, inspectable))]
 #[cfg_attr(feature = "python", pyclass(name = "Todos"))]
+#[cfg_attr(feature = "cpp", repr(C))]
 #[derive(Debug, PartialEq, Clone, Default)]
 pub struct Todos(Vec<Todo>);
 

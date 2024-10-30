@@ -30,6 +30,8 @@
             rustup
             gcc
             cmake
+            cargo-expand
+            rust-cbindgen
           ];
         };
 
