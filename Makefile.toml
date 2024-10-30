@@ -39,3 +39,19 @@ dependencies = ["build-wasm"]
 command = "node"
 args = ["main.mjs"]
 description = "Run the Node.js script after building WebAssembly."
+
+[tasks.build-lib-cpp]
+cwd = "./lib"
+command = "cargo"
+args = ["build", "--release", "--features", "cpp"]
+description = "Build the C++ library from Rust."
+
+[tasks.build-cpp]
+dependencies = ["build-lib-cpp"]
+cwd = "./cpp"
+command = "make"
+
+[tasks.run-cpp]
+cwd = "./cpp"
+dependencies = ["build-cpp"]
+command = "./myapp"

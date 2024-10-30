@@ -1,16 +1,21 @@
 [package]
-name = "rust-ffi-example"
+name = "rust-bindings-example"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
 name = "core"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "staticlib"]
 
 [features]
 python = ["pyo3"]
 wasm = ["wasm-bindgen"]
+cpp = ["cxx"]
 
 [dependencies]
 pyo3 = { version = "0.22.5", features = ["extension-module"], optional = true }
 wasm-bindgen = { version = "0.2.95", optional = true }
+cxx = { version = "1.0.129", optional = true }
+
+[build-dependencies]
+cxx-build = "1.0"

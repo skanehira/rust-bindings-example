@@ -29,6 +29,7 @@
             # rust
             rustup
             gcc
+            cmake
           ];
         };
 

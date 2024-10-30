@@ -1,0 +1,4 @@
+CompileFlags:
+  Add: 
+    - "-I../lib/target/cxxbridge/rust-bindings-example/src/"
+    - "-I../lib/target/cxxbridge/rust"
