@@ -1,58 +1,156 @@
-#![allow(dead_code)]
+#[cfg(feature = "wasm")]
+use wasm_bindgen::prelude::*;
 
-use crate::enumurate::TodoStatus;
+#[cfg(feature = "python")]
+use pyo3::{exceptions::PyValueError, prelude::*};
 
-#[derive(Clone, Debug)]
-pub(crate) struct Todo {
-    pub id: i32,
-    pub title: String,
-    pub status: TodoStatus,
+#[cfg(feature = "wasm")]
+type MyResult<T> = Result<T, String>;
+
+#[cfg(feature = "python")]
+type MyResult<T> = PyResult<T>;
+
+#[cfg(feature = "cpp")]
+type MyResult<T> = Result<T, String>;
+
+#[cfg_attr(feature = "python", pyclass(eq, eq_int))]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[derive(Debug, PartialEq, Clone, Copy, Default)]
+pub enum TodoStatus {
+    #[default]
+    NotStarted,
+    InProgress,
+    Completed,
 }
 
+#[cfg_attr(feature = "wasm", wasm_bindgen(js_name = Todo, inspectable))]
+#[cfg_attr(feature = "python", pyclass(name = "Todo"))]
+#[derive(Debug, PartialEq, Clone, Default)]
+pub struct Todo {
+    id: i32,
+    title: String,
+    status: TodoStatus,
+}
+
+#[cfg_attr(feature = "wasm", wasm_bindgen(js_class = Todo))]
+#[cfg_attr(feature = "python", pymethods)]
 impl Todo {
+    #[cfg(feature = "wasm")]
+    #[wasm_bindgen(constructor)]
     pub fn new(id: i32, title: String) -> Self {
         Todo {
             id,
             title,
-            status: TodoStatus::NotStarted,
+            status: TodoStatus::default(),
         }
+    }
+
+    #[cfg(feature = "python")]
+    #[new]
+    pub fn new(id: i32, title: String) -> Self {
+        Todo {
+            id,
+            title,
+            status: TodoStatus::default(),
+        }
+    }
+
+    pub fn status(&self) -> TodoStatus {
+        self.status
+    }
+
+    pub fn completed(&self) -> bool {
+        self.status == TodoStatus::Completed
+    }
+
+    pub fn title(&self) -> String {
+        self.title.clone()
     }
 
     pub fn change_status(&mut self, status: TodoStatus) {
         self.status = status;
     }
+
+    pub fn change_title(&mut self, title: String) {
+        self.title = title;
+    }
+
+    #[cfg(feature = "python")]
+    fn __repr__(&self) -> String {
+        format!(
+            "Todo {{ id: {}, title: \"{}\", status: {:?} }}",
+            self.id, self.title, self.status
+        )
+    }
 }
 
-#[derive(Default, Clone)]
-pub(crate) struct Todos(Vec<Todo>);
+#[cfg_attr(feature = "wasm", wasm_bindgen(js_name = Todos, inspectable))]
+#[cfg_attr(feature = "python", pyclass(name = "Todos"))]
+#[derive(Debug, PartialEq, Clone, Default)]
+pub struct Todos(Vec<Todo>);
 
+#[cfg(feature = "wasm")]
+#[wasm_bindgen(js_class = Todos)]
 impl Todos {
-    pub fn get(&self, id: i32) -> Option<&Todo> {
-        self.0.iter().find(|todo| todo.id == id)
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[cfg_attr(feature = "wasm", wasm_bindgen(js_class = Todos))]
+#[cfg_attr(feature = "python", pymethods)]
+impl Todos {
+    #[cfg(feature = "python")]
+    #[new]
+    fn new() -> Self {
+        Self::default()
     }
 
     pub fn add(&mut self, id: i32, title: String) {
         self.0.push(Todo::new(id, title));
     }
 
-    pub fn complete(&mut self, id: i32) -> Result<(), &'static str> {
-        self.0
+    #[cfg(feature = "python")]
+    pub fn complete(&mut self, id: i32) -> MyResult<()> {
+        let todo = self
+            .0
             .iter_mut()
             .find(|todo| todo.id == id)
-            .ok_or("todo not found")?
-            .change_status(TodoStatus::Completed);
+            .ok_or_else(|| PyValueError::new_err("Todo not found"))?;
+        todo.change_status(TodoStatus::Completed);
+
         Ok(())
     }
 
-    pub fn remove(&mut self, id: i32) -> Result<(), &'static str> {
-        let Some(pos) = self.0.iter().position(|todo| todo.id == id) else {
-            return Err("todo not found");
-        };
-        self.0.remove(pos);
+    #[cfg(feature = "wasm")]
+    pub fn complete(&mut self, id: i32) -> MyResult<()> {
+        let todo = self
+            .0
+            .iter_mut()
+            .find(|todo| todo.id == id)
+            .ok_or("Todo not found".to_string())?;
+        todo.change_status(TodoStatus::Completed);
         Ok(())
     }
 
-    pub fn list(&self) -> &[Todo] {
-        self.0.as_slice()
+    pub fn remove(&mut self, id: usize) -> MyResult<()> {
+        let _ = self.0.remove(id);
+
+        Ok(())
     }
+
+    pub fn list(&self) -> Vec<Todo> {
+        self.0.clone()
+    }
+
+    pub fn get(&self, id: i32) -> Option<Todo> {
+        self.0.iter().find(|todo| todo.id == id).cloned()
+    }
+}
+
+#[cfg(feature = "python")]
+#[pymodule]
+fn core(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<Todo>()
 }
