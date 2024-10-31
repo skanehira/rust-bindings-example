@@ -13,33 +13,10 @@ type MyResult<T> = PyResult<T>;
 #[cfg(feature = "cpp")]
 type MyResult<T> = Result<T, String>;
 
-#[cfg(feature = "cpp")]
-#[cxx::bridge]
-mod ffi {
-    extern "Rust" {
-        type Todo;
-
-        fn new_todo(id: i32, title: String) -> Box<Todo>;
-        fn status(todo: &Todo) -> TodoStatus;
-    }
-
-    #[derive(Debug)]
-    enum TodoStatus {
-        NotStarted = 0,
-        InProgress = 1,
-        Completed = 2,
-    }
-}
-
-#[cfg(feature = "cpp")]
-pub fn new_todo(id: i32, title: String) -> Box<Todo> {
-    Box::new(Todo::new(id, title))
-}
-
 #[cfg_attr(feature = "python", pyclass(eq, eq_int))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
+#[cfg_attr(feature = "cpp", repr(C))]
 #[derive(Debug, PartialEq, Clone, Copy, Default)]
-#[repr(i32)]
 pub enum TodoStatus {
     #[default]
     NotStarted,
@@ -49,11 +26,18 @@ pub enum TodoStatus {
 
 #[cfg_attr(feature = "wasm", wasm_bindgen(js_name = Todo, inspectable))]
 #[cfg_attr(feature = "python", pyclass(name = "Todo"))]
+#[cfg_attr(feature = "cpp", repr(C))]
 #[derive(Debug, PartialEq, Clone, Default)]
 pub struct Todo {
     id: i32,
     title: String,
     status: TodoStatus,
+}
+
+#[cfg(feature = "cpp")]
+#[no_mangle]
+pub extern "C" fn new_todo(id: i32, title: String) -> Todo {
+    Todo::new(id, title)
 }
 
 #[cfg_attr(feature = "wasm", wasm_bindgen(js_class = Todo))]
@@ -88,23 +72,31 @@ impl Todo {
         }
     }
 
-    pub fn status(&self) -> TodoStatus {
+    #[no_mangle]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
+    pub extern "C" fn status(&self) -> TodoStatus {
         self.status
     }
 
-    pub fn completed(&self) -> bool {
+    #[no_mangle]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
+    pub extern "C" fn completed(&self) -> bool {
         self.status == TodoStatus::Completed
     }
 
-    pub fn title(&self) -> String {
+    #[no_mangle]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
+    pub extern "C" fn title(&self) -> String {
         self.title.clone()
     }
 
-    pub fn change_status(&mut self, status: TodoStatus) {
+    #[no_mangle]
+    pub extern "C" fn change_status(&mut self, status: TodoStatus) {
         self.status = status;
     }
 
-    pub fn change_title(&mut self, title: String) {
+    #[no_mangle]
+    pub extern "C" fn change_title(&mut self, title: String) {
         self.title = title;
     }
 
@@ -174,6 +166,7 @@ impl Todos {
         Ok(())
     }
 
+    #[cfg_attr(feature = "wasm", wasm_bindgen(getter))]
     pub fn list(&self) -> Vec<Todo> {
         self.0.clone()
     }

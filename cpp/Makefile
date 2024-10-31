@@ -1,17 +1,15 @@
-CXX = g++
-SRC = main.cpp ../lib/target/cxxbridge/rust-bindings-example/src/cpp.rs.cc
-TARGET = myapp
+C++ = g++
+SRC = main.cpp
+TARGET = main
 
-CXX_LIB = $(wildcard $(HOME)/.cargo/registry/src/index.crates.io-*/cxx-*/include)
-CXX_FLAGS = $(addprefix -I, $(CXX_LIB))
-INCLUDE_DIR = -I../lib/target/cxxbridge/rust-bindings-example/src/ $(CXX_FLAGS)
+INCLUDE_DIR = -I./
 
 RUST_LIB = ../lib/target/release/libcore.a
 
 all: $(TARGET)
 
 $(TARGET):clean $(RUST_LIB) $(SRC)
-	$(CXX) -o $(TARGET) $(SRC) $(RUST_LIB) $(INCLUDE_DIR) -lpthread -lstdc++
+	$(C++) -o $(TARGET) $(SRC) $(RUST_LIB) $(INCLUDE_DIR) -lpthread -lstdc++
 
 clean:
 	@rm -f $(TARGET)

@@ -1,12 +1,9 @@
 #[cfg(feature = "cpp")]
-use std::process::Command;
+extern crate cbindgen;
 
 #[cfg(feature = "cpp")]
 fn main() {
-    Command::new("cbindgen")
-        .args(["--config", "cbindgen.toml", "--crate", "rust-bindings-example", "--output", "core.h"])
-        .status()
-        .expect("Failed to run cbindgen");
+    cbindgen::generate(".").unwrap().write_to_file("../cpp/core.h");
 }
 
 //#[cfg(feature = "cpp")]
