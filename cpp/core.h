@@ -4,24 +4,33 @@
 #include <ostream>
 #include <new>
 
-struct String;
+enum class TodoStatus {
+  NotStarted,
+  InProgress,
+  Completed,
+};
 
-struct Todo;
-
-struct TodoStatus;
+struct Todo {
+  int32_t id;
+  const char *title;
+  TodoStatus status;
+};
 
 extern "C" {
 
-Todo new_todo(int32_t id, String title);
+/// # Safety
+Todo *new_todo(int32_t id, const char *title);
 
-TodoStatus status(const Todo *self);
+/// # Safety
+void todo_free(Todo *o);
+
+/// # Safety
+void free_string(char *s);
+
+char *status_str(const Todo *self);
 
 bool completed(const Todo *self);
 
-String title(const Todo *self);
-
 void change_status(Todo *self, TodoStatus status);
-
-void change_title(Todo *self, String title);
 
 }  // extern "C"

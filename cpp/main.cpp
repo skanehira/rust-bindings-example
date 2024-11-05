@@ -2,14 +2,22 @@
 #include <iostream>
 
 int main() {
-  // `new_todo`関数で`Todo`構造体を作成
   auto todo = new_todo(1, "Learn Rust");
 
-  // `id`と`status`を出力
-  std::cout << "Todo ID: " << get_id(*todo) << std::endl;
+  auto status = status_str(todo);
 
-  // `status_as_int`でステータスを整数として出力
-  std::cout << "Todo Status: " << status_as_int(*todo) << std::endl;
+  std::cout << "Todo.id: " << todo->id << std::endl;
+  std::cout << "Todo.title: " << todo->title << std::endl;
+  std::cout << "Todo.status: " << status << std::endl;
+  free_string(status);
+
+  change_status(todo, TodoStatus::Completed);
+
+  status = status_str(todo);
+  std::cout << "Todo.status: " << status << std::endl;
+
+  free_string(status);
+  todo_free(todo);
 
   return 0;
 }
