@@ -10,13 +10,12 @@ crate-type = ["cdylib", "staticlib"]
 [features]
 python = ["pyo3"]
 wasm = ["wasm-bindgen"]
-cpp = ["cxx"]
+cpp = []
+go = []
 
 [dependencies]
 pyo3 = { version = "0.22.5", features = ["extension-module"], optional = true }
 wasm-bindgen = { version = "0.2.95", optional = true }
-cxx = { version = "1.0.129", optional = true }
 
 [build-dependencies]
-cxx-build = "1.0"
 cbindgen = "0.27.0"

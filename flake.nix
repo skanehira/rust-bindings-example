@@ -18,6 +18,8 @@
             valgrind
             cargo-make
             nodejs_22
+            # go
+            go
             # c++
             gcc
             # python

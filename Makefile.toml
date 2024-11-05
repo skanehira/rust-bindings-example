@@ -56,3 +56,15 @@ cwd = "./cpp"
 dependencies = ["build-cpp"]
 command = "valgrind"
 args = ["-s", "--leak-check=full", "./main"]
+
+[tasks.build-lib-go]
+cwd = "./lib"
+command = "cargo"
+args = ["build", "--release", "--features", "go"]
+description = "Build the Go library from Rust."
+
+[tasks.run-go]
+dependencies = ["build-lib-go"]
+cwd = "./go"
+command = "go"
+args = ["run", "main.go"]

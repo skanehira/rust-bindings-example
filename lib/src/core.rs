@@ -1,4 +1,4 @@
-#[cfg(feature = "cpp")]
+#[cfg(any(feature = "cpp", feature = "go"))]
 use std::ffi::{c_char, CString};
 
 #[cfg(feature = "wasm")]
@@ -18,7 +18,7 @@ pub enum TodoStatus {
     Completed,
 }
 
-#[cfg(not(feature = "cpp"))]
+#[cfg(not(any(feature = "cpp", feature = "go")))]
 #[cfg_attr(feature = "wasm", wasm_bindgen(inspectable))]
 #[cfg_attr(feature = "python", pyclass)]
 #[derive(Default, Debug, PartialEq, Clone)]
@@ -29,7 +29,7 @@ pub struct Todo {
     status: TodoStatus,
 }
 
-#[cfg(feature = "cpp")]
+#[cfg(any(feature = "cpp", feature = "go"))]
 #[derive(Debug, PartialEq, Clone)]
 #[repr(C)]
 pub struct Todo {
@@ -39,7 +39,7 @@ pub struct Todo {
 }
 
 /// # Safety
-#[cfg(feature = "cpp")]
+#[cfg(any(feature = "cpp", feature = "go"))]
 #[no_mangle]
 pub unsafe extern "C" fn new_todo(id: i32, title: *const c_char) -> *mut Todo {
     Box::into_raw(Box::new(Todo {
@@ -63,7 +63,7 @@ impl Todo {
 }
 
 /// # Safety
-#[cfg(feature = "cpp")]
+#[cfg(any(feature = "cpp", feature = "go"))]
 #[no_mangle]
 pub unsafe extern "C" fn todo_free(o: *mut Todo) {
     if !o.is_null() {
@@ -104,7 +104,7 @@ impl Todo {
         self.status
     }
 
-    #[cfg(feature = "cpp")]
+    #[cfg(any(feature = "cpp", feature = "go"))]
     #[no_mangle]
     pub extern "C" fn status_str(&self) -> *mut c_char {
         let status = format!("{:?}", self.status);

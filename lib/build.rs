@@ -10,5 +10,15 @@ fn main() {
         .write_to_file("../cpp/core.h");
 }
 
-#[cfg(not(feature = "cpp"))]
+#[cfg(feature = "go")]
+fn main() {
+    cbindgen::Builder::new()
+        .with_crate(".")
+        .with_language(cbindgen::Language::C)
+        .generate()
+        .unwrap()
+        .write_to_file("../go/core.h");
+}
+
+#[cfg(any(feature = "python", feature = "wasm"))]
 fn main() {}
