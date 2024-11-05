@@ -9,5 +9,11 @@ $ cargo make run-py
 ## node
 
 ```sh
-$ cargo make run-wasm
+$ cargo make run-node
+```
+
+## cpp
+
+```sh
+$ cargo make run-cpp
 ```
