@@ -14,6 +14,8 @@
       {
         packages.default = pkgs.mkShell {
           packages = with pkgs; [
+            # tools
+            valgrind
             cargo-make
             nodejs_22
             # c++
@@ -30,6 +32,8 @@
             rustup
             gcc
             cmake
+            cargo-expand
+            rust-cbindgen
           ];
         };
 

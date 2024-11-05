@@ -1,12 +1,23 @@
-#include "cpp.rs.h" // cxxが自動生成するヘッダーファイル
-#include "cxx.h"
-
+#include "core.h"
 #include <iostream>
 
 int main() {
-  // Rustの関数を呼び出してPointを作成
-  auto point = new_point(10, 20);
-  std::cout << "Point: (" << point.x << ", " << point.y << ")" << std::endl;
+  auto todo = new_todo(1, "Learn Rust");
+
+  auto status = status_str(todo);
+
+  std::cout << "Todo.id: " << todo->id << std::endl;
+  std::cout << "Todo.title: " << todo->title << std::endl;
+  std::cout << "Todo.status: " << status << std::endl;
+  free_string(status);
+
+  change_status(todo, TodoStatus::Completed);
+
+  status = status_str(todo);
+  std::cout << "Todo.status: " << status << std::endl;
+
+  free_string(status);
+  todo_free(todo);
 
   return 0;
 }

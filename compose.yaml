@@ -1,0 +1,18 @@
+services:
+  nix-develop:
+    container_name: nix-develop
+    image: nix-develop
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/work
+      - ./nix.conf:/root/.config/nix/nix.conf
+    working_dir: /work
+    tty: true
+    entrypoint: /bin/bash
+    command:
+      - -l
+      - -c
+      - |
+        nix develop

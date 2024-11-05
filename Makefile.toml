@@ -54,4 +54,5 @@ command = "make"
 [tasks.run-cpp]
 cwd = "./cpp"
 dependencies = ["build-cpp"]
-command = "./myapp"
+command = "valgrind"
+args = ["-s", "--leak-check=full", "./main"]

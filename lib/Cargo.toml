@@ -19,3 +19,4 @@ cxx = { version = "1.0.129", optional = true }
 
 [build-dependencies]
 cxx-build = "1.0"
+cbindgen = "0.27.0"
