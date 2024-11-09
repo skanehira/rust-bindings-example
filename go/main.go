@@ -14,12 +14,12 @@ func main() {
 	title := C.CString("Hello from Go")
 	defer C.free(unsafe.Pointer(title))
 	todo := C.new_todo(1, title)
-	defer C.free(unsafe.Pointer(todo))
+	defer C.free_todo(todo)
 
 	C.change_status(todo, C.Completed)
 
 	status := C.status_str(todo)
-	defer C.free(unsafe.Pointer(status))
+	defer C.free_string(status)
 
 	fmt.Printf("ID: %d, Title: %s, Status: %s\n", todo.id, C.GoString(todo.title), C.GoString(status))
 }

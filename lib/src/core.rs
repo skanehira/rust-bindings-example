@@ -65,7 +65,7 @@ impl Todo {
 /// # Safety
 #[cfg(any(feature = "cpp", feature = "go"))]
 #[no_mangle]
-pub unsafe extern "C" fn todo_free(o: *mut Todo) {
+pub unsafe extern "C" fn free_todo(o: *mut Todo) {
     if !o.is_null() {
         unsafe {
             let _ = Box::from_raw(o);

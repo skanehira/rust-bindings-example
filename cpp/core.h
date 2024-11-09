@@ -22,7 +22,7 @@ extern "C" {
 Todo *new_todo(int32_t id, const char *title);
 
 /// # Safety
-void todo_free(Todo *o);
+void free_todo(Todo *o);
 
 /// # Safety
 void free_string(char *s);

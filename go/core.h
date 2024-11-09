@@ -23,7 +23,7 @@ struct Todo *new_todo(int32_t id, const char *title);
 /**
  * # Safety
  */
-void todo_free(struct Todo *o);
+void free_todo(struct Todo *o);
 
 /**
  * # Safety

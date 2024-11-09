@@ -17,7 +17,7 @@ int main() {
   std::cout << "Todo.status: " << status << std::endl;
 
   free_string(status);
-  todo_free(todo);
+  free_todo(todo);
 
   return 0;
 }
