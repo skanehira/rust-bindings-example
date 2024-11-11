@@ -74,7 +74,7 @@ pub unsafe extern "C" fn free_todo(o: *mut Todo) {
 }
 
 /// # Safety
-#[cfg(feature = "cpp")]
+#[cfg(any(feature = "cpp", feature = "go"))]
 #[no_mangle]
 pub unsafe extern "C" fn free_string(s: *mut c_char) {
     if !s.is_null() {
