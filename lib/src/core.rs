@@ -159,13 +159,7 @@ impl Todo {
         ptr: *mut FFIVec<*mut c_char>,
         index: usize,
     ) -> *mut c_char {
-        // let item = FFIVec::get(ptr, index);
-        let vec = unsafe {
-            let ffi_vec = Box::from_raw(ptr);
-            let vec = Vec::from_raw_parts(ffi_vec.data, ffi_vec.len, ffi_vec.capacity);
-            std::mem::forget(ffi_vec);
-            vec
-        };
+        let vec = FFIVec::into_vec(ptr);
         let item = vec.get(index).unwrap();
         let c = *item as *mut c_char;
         std::mem::forget(vec);
