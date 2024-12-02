@@ -15,6 +15,12 @@ typedef struct Todo {
   enum TodoStatus status;
 } Todo;
 
+typedef struct FFIVec_____c_char {
+  char **data;
+  uintptr_t len;
+  uintptr_t capacity;
+} FFIVec_____c_char;
+
 /**
  * # Safety
  */
@@ -35,3 +41,15 @@ char *status_str(const struct Todo *self);
 bool completed(const struct Todo *self);
 
 void change_status(struct Todo *self, enum TodoStatus status);
+
+struct FFIVec_____c_char *list(const struct Todo *self);
+
+/**
+ * # Safety
+ */
+void free_ffivec(struct FFIVec_____c_char *ptr);
+
+/**
+ * # Safety
+ */
+char *get_item_from_vec(struct FFIVec_____c_char *ptr, uintptr_t index);

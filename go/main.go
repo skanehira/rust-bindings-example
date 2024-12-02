@@ -22,4 +22,15 @@ func main() {
 	defer C.free_string(status)
 
 	fmt.Printf("ID: %d, Title: %s, Status: %s\n", todo.id, C.GoString(todo.title), C.GoString(status))
+
+	list := C.list(todo)
+	defer C.free_ffivec(list)
+
+	item := C.get_item_from_vec(list, 0)
+	fmt.Printf("Item: %s\n", C.GoString(item))
+	defer C.free_string(item)
+
+	item = C.get_item_from_vec(list, 1)
+	fmt.Printf("Item: %s\n", C.GoString(item))
+	defer C.free_string(item)
 }
