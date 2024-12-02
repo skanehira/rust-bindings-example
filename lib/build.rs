@@ -1,4 +1,4 @@
-#[cfg(feature = "cpp")]
+#[cfg(any(feature = "cpp", feature = "go"))]
 extern crate cbindgen;
 
 #[cfg(feature = "cpp")]

@@ -1,4 +1,6 @@
 #[cfg(any(feature = "cpp", feature = "go"))]
+use crate::ffi_vec::FFIVec;
+#[cfg(any(feature = "cpp", feature = "go"))]
 use std::ffi::{c_char, CString};
 
 #[cfg(feature = "wasm")]
@@ -120,6 +122,54 @@ impl Todo {
     #[no_mangle]
     pub extern "C" fn change_status(&mut self, status: TodoStatus) {
         self.status = status;
+    }
+
+    #[cfg(any(feature = "go", feature = "cpp"))]
+    #[no_mangle]
+    pub extern "C" fn list(&self) -> *mut FFIVec<*mut c_char> {
+        let list = vec!["one", "two", "three"];
+
+        let mut vec: Vec<*mut c_char> = list
+            .into_iter()
+            .map(|s| CString::new(s).unwrap().into_raw())
+            .collect();
+
+        let ptr = Box::into_raw(Box::new(FFIVec {
+            data: vec.as_mut_ptr(),
+            len: vec.len(),
+            capacity: vec.capacity(),
+        }));
+
+        std::mem::forget(vec);
+
+        ptr
+    }
+
+    /// # Safety
+    #[cfg(any(feature = "go", feature = "cpp"))]
+    #[no_mangle]
+    pub unsafe extern "C" fn free_ffivec(ptr: *mut FFIVec<*mut c_char>) {
+        FFIVec::free_ffivec(ptr)
+    }
+
+    /// # Safety
+    #[cfg(any(feature = "go", feature = "cpp"))]
+    #[no_mangle]
+    pub unsafe extern "C" fn get_item_from_vec(
+        ptr: *mut FFIVec<*mut c_char>,
+        index: usize,
+    ) -> *mut c_char {
+        // let item = FFIVec::get(ptr, index);
+        let vec = unsafe {
+            let ffi_vec = Box::from_raw(ptr);
+            let vec = Vec::from_raw_parts(ffi_vec.data, ffi_vec.len, ffi_vec.capacity);
+            std::mem::forget(ffi_vec);
+            vec
+        };
+        let item = vec.get(index).unwrap();
+        let c = *item as *mut c_char;
+        std::mem::forget(vec);
+        c
     }
 
     #[cfg(feature = "python")]
