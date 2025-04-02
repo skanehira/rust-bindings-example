@@ -14,7 +14,7 @@ cpp = []
 go = []
 
 [dependencies]
-pyo3 = { version = "0.22.5", features = ["extension-module"], optional = true }
+pyo3 = { version = "0.24.1", features = ["extension-module"], optional = true }
 wasm-bindgen = { version = "0.2.95", optional = true }
 
 [build-dependencies]
